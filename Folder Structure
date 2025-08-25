@@ -1,0 +1,13 @@
+solana_trading_bot/
+├── config/
+│   └── settings.json
+├── bots/
+│   ├── clmm_orca.py
+│   ├── dlmm_meteora.py
+│   └── openbook_ray.py
+├── core/
+│   ├── price_feed.py
+│   ├── wallet.py
+│   └── dca_stoploss.py
+├── main.py
+└── requirements.txt
