@@ -11,3 +11,73 @@ solana_trading_bot/
 │   └── dca_stoploss.py
 ├── main.py
 └── requirements.txt
+
+
+requirements.txt
+solana
+pythclient
+requests
+numpy
+
+config/settings.json
+{
+  "token": "SOL",
+  "stop_loss_price": 145.0,
+  "dca_levels": [140.0, 135.0, 130.0],
+  "dca_amount": 0.25,
+  "dry_run": true
+}
+
+core/price_feed.py
+import json
+from core.price_feed import get_current_price
+
+with open("config/settings.json") as f:
+    settings = json.load(f)
+
+executed_levels = []
+
+def dca_and_stoploss_logic():
+    price = get_current_price(settings["token"])
+    print(f"[INFO] Current Price: {price}")
+
+    if price <= settings["stop_loss_price"]:
+        print("[ALERT] Stop-loss triggered!")
+        for level in settings["dca_levels"]:
+            if price <= level and level not in executed_levels:
+                print(f"[DCA] Buying at ${level} for {settings['dca_amount']} {settings['token']}")
+                if not settings["dry_run"]:
+                    # Insert trade execution here
+                    pass
+                executed_levels.append(level)
+
+bots/clmm_orca.py
+def run_orca_clmm_strategy():
+    print("[ORCA] Running CLMM placeholder...")
+    # Real SDK/API logic here
+bots/dlmm_meteora.py
+def run_meteora_dlmm_strategy():
+    print("[METEORA] Running DLMM placeholder...")
+    # Real SDK/API logic here
+bots/openbook_ray.py
+def run_openbook_strategy():
+    print("[OPENBOOK] Running Orderbook placeholder...")
+    # Real order placement logic here
+main.py
+from bots.clmm_orca import run_orca_clmm_strategy
+from bots.dlmm_meteora import run_meteora_dlmm_strategy
+from bots.openbook_ray import run_openbook_strategy
+from core.dca_stoploss import dca_and_stoploss_logic
+import time
+
+def main_loop():
+    while True:
+        print("\n=== Solana Bot Cycle ===")
+        dca_and_stoploss_logic()
+        run_orca_clmm_strategy()
+        run_meteora_dlmm_strategy()
+        run_openbook_strategy()
+        time.sleep(30)  # 30 seconds between cycles
+
+if __name__ == "__main__":
+    main_loop()
